@@ -1,10 +1,11 @@
+```md
 # SAWS Chatbot Module – Sprint 1 Full Planning Document
 
 ## 1. Module Overview
 
-The Virtual Assistant module is one of the core features of the **SmartCare Appointment and Wellness System (SAWS)**. The chatbot's purpose is to provide support and navigation for different user types (e.g., Guests, Registered Patients, and Wellness Coordinators) while improving accessibility and reducing the need for manual assistance in common tasks.
+The Virtual Assistant module is one of the core features of the SmartCare Appointment and Wellness System (SAWS). The chatbot's purpose is to provide support and navigation for different user types (e.g., Guests, Registered Patients, and Wellness Coordinators) while improving accessibility and reducing the need for manual assistance in common tasks.
 
-For this module, we have chosen to use **AWS Lex**, **AWS Lambda**, and **Amazon DynamoDB** as the underlying architecture.
+For this module, we have chosen to use AWS Lex, AWS Lambda, and Amazon DynamoDB as the underlying architecture [1]–[3].
 
 ---
 
@@ -67,13 +68,52 @@ Wellness Coordinators are primarily responsible for administrative support and c
 
 ---
 
-## 5. Proposed Chatbot Scope
+## 5. Selected Services with justification
 
+The proposed service stack for this chatbot module is AWS Lex V2 + AWS Lambda + DynamoDB. The reason why this stack is chosen over GCP is that it’s consistent which reduces unnecessary complexity during later implementation planning. Additionally, it’s also within the AWS Ecosystem and it has the natural integration with AWS Lambda fulfilment and supports slot-based conversation flows for collecting user input such as appointment reference codes [1]. Lambda can then perform backend processing and query DynamoDB based on the values collected by Lex V2, which suits the chatbot’s appointment lookup and FAQ use cases [2], [3].
 
+---
 
+## 6. Preliminary architecture design
 
+The following high-level architecture is proposed for the chatbot module and gives the overall interaction and flow when the user interacts with the system:
 
+**User → React Frontend → AWS Lex V2 → AWS Lambda → DynamoDB → Respond to User**
 
+### Component Roles
 
-## References 
-- AWS to be added before completion
+**React Frontend:** provides the chat interface inside the SAWS Web App.
+**AWS Lex V2:** Identifies the user’s intent and gathers any missing slot values required to fulfil the request. E.g. reference code [1].
+**AWS Lambda:** It acts like the fulfilment layer that processes the request and interact with storage [2].
+**DynamoDB:** Stores data needed for chatbot responses such as appointment information [3].
+
+---
+
+## 7. Initial API and technology research
+
+Initial research for the chatbot module focused on how AWS Lex V2 structures conversations through intents, slots, and slot types [1]. The bot first identifies the users intent, then requests any missing information needed to complete that intent, such as an appointment reference code for appointment lookup.
+
+For the planning purpose phase, the following chatbot intent areas are proposed:
+
+- NavigationAssistIntent
+- AppointmentLookupIntent
+- WellnessPackageInquiryIntent
+- SubmitConcernIntent
+- FAQIntent
+
+The following example slot ideas were also identified during research:
+
+- ReferenceCode for appointment lookup
+- FeatureName for navigation-related questions
+- PackageName for wellness package inquiries
+
+---
+
+## 8. References reviewed during research
+
+[1] Amazon Web Services, "What is Amazon Lex V2?," Amazon Lex Developer Guide. [Online]. Available: https://docs.aws.amazon.com/lexv2/latest/dg/what-is.html. [Accessed: 11-Jun-2026].
+
+[2] Amazon Web Services, "What is AWS Lambda?," AWS Lambda Developer Guide. [Online]. Available: https://docs.aws.amazon.com/lambda/latest/dg/welcome.html. [Accessed: 11-Jun-2026].
+
+[3] Amazon Web Services, "What is Amazon DynamoDB?," Amazon DynamoDB Developer Guide. [Online]. Available: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html. [Accessed: 11-Jun-2026].
+```

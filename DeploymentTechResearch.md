@@ -57,3 +57,20 @@ Using Cloud Run for frontend deployment and AWS for backend services satisfies t
 ## Conclusion
 
 The selected deployment architecture provides scalability, maintainability, and compliance with project requirements.
+
+
+References
+
+[1] Google Cloud. Cloud Run Documentation. Available: https://cloud.google.com/run/docs
+
+[2] Docker Inc. Docker Documentation. Available: https://docs.docker.com/
+
+[3] GitLab. GitLab CI/CD Documentation. Available: https://docs.gitlab.com/ee/ci/
+
+[4] Amazon Web Services. Amazon Cognito Documentation. Available: https://docs.aws.amazon.com/cognito/
+
+[5] Amazon Web Services. AWS Lambda Documentation. Available: https://docs.aws.amazon.com/lambda/
+
+[6] Amazon Web Services. Amazon DynamoDB Documentation. Available: https://docs.aws.amazon.com/dynamodb/
+
+[7] Amazon Web Services. AWS Well-Architected Framework. Available: https://docs.aws.amazon.com/wellarchitected/

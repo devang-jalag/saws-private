@@ -62,3 +62,14 @@ React was selected because it offers rapid development, strong community support
 ## Conclusion
 
 React provides the best balance between development speed, maintainability, scalability, and cloud service integration, making it the most suitable frontend technology for SAWS.
+
+
+References
+
+[1] Meta Open Source. React Documentation. Available: https://react.dev/
+
+[2] React Router Team. React Router Documentation. Available: https://reactrouter.com/
+
+[3] MUI Team. Material UI Documentation. Available: https://mui.com/
+
+[4] Axios Contributors. Axios Documentation. Available: https://axios-http.com/

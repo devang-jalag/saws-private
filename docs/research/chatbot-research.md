@@ -115,4 +115,3 @@ The following example slot ideas were also identified during research:
 [2] Amazon Web Services, "What is AWS Lambda?," AWS Lambda Developer Guide. [Online]. Available: https://docs.aws.amazon.com/lambda/latest/dg/welcome.html. [Accessed: 11-Jun-2026].
 
 [3] Amazon Web Services, "What is Amazon DynamoDB?," Amazon DynamoDB Developer Guide. [Online]. Available: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html. [Accessed: 11-Jun-2026].
-```

@@ -1,4 +1,3 @@
-```md
 # SAWS Chatbot Module – Sprint 1 Full Planning Document
 
 ## 1. Module Overview

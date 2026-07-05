@@ -1,0 +1,20 @@
+environment    = "sprint2"
+aws_region     = "us-east-1"
+gcp_project_id = "saws-messaging-dev"
+gcp_region     = "us-central1"
+
+# Cross-module integration points - values owned by teammates' modules, not created here.
+user_pool_id            = "us-east-1_xxxxxxxxx"
+user_pool_client_id     = "xxxxxxxxxxxxxxxxxxxxxxxxxx"
+users_table_name        = "saws-users"
+appointments_table_name = "saws-appointments"
+
+# Credentials for the cross-cloud AWS SDK calls made from GCP Cloud Functions.
+# Use a dedicated least-privilege IAM user; prefer a secrets manager over plain tfvars.
+gcp_functions_aws_access_key_id     = "CHANGE_ME"
+gcp_functions_aws_secret_access_key = "CHANGE_ME"
+
+# Only set this if your AWS account can't create IAM roles (e.g. AWS Academy Learner Lab).
+# Find LabRole's ARN with `aws iam list-roles --query "Roles[?RoleName=='LabRole'].Arn"`.
+# Leave blank/commented out on a normal account - each Lambda gets its own least-privilege role.
+# existing_lambda_role_arn = "arn:aws:iam::123456789012:role/LabRole"

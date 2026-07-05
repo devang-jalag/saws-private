@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+dist/
+build/
+
+# Terraform
+messaging-notifications/infra/.terraform/
+messaging-notifications/infra/.terraform.lock.hcl
+messaging-notifications/infra/**/.terraform/
+messaging-notifications/infra/*.tfstate
+messaging-notifications/infra/*.tfstate.*
+messaging-notifications/infra/*.tfvars
+!messaging-notifications/infra/*.tfvars.example
+messaging-notifications/infra/.build/
+messaging-notifications/infra/crash.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

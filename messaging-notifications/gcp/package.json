@@ -1,0 +1,28 @@
+{
+  "name": "saws-backend-gcp-messaging",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GCP Cloud Functions for the SAWS Messaging module: Pub/Sub + Cloud Functions + Firestore.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand",
+    "dev:submit-concern": "functions-framework --target=submitConcern --port=8081",
+    "dev:respond-to-concern": "functions-framework --target=respondToConcern --port=8082",
+    "dev:list-concerns": "functions-framework --target=listConcerns --port=8083",
+    "dev:assign-coordinator": "node scripts/local-assign-coordinator.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.600.0",
+    "@aws-sdk/client-sns": "^3.600.0",
+    "@aws-sdk/lib-dynamodb": "^3.600.0",
+    "@google-cloud/firestore": "^7.9.0",
+    "@google-cloud/pubsub": "^4.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^3.4.2",
+    "jest": "^29.7.0"
+  }
+}

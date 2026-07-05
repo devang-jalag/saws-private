@@ -108,10 +108,26 @@ rather than debugging the existing install.
 
 ## Deploying
 
+State is stored in GitLab's built-in Terraform-state HTTP backend (`backend "http" {}` in
+`providers.tf`), not locally - this way local ad-hoc runs and CI never disagree about
+what's already deployed. That means `terraform init` needs backend-config flags even for
+a local run:
+
 ```bash
 cd infra
 cp terraform.tfvars.example terraform.tfvars   # fill in user_pool_id, table names, GCP project, etc.
-terraform init
+
+PROJECT_ID=<find this on the GitLab project page, under the project name>
+terraform init \
+  -backend-config="address=https://git.cs.dal.ca/api/v4/projects/${PROJECT_ID}/terraform/state/messaging-notifications" \
+  -backend-config="lock_address=https://git.cs.dal.ca/api/v4/projects/${PROJECT_ID}/terraform/state/messaging-notifications/lock" \
+  -backend-config="unlock_address=https://git.cs.dal.ca/api/v4/projects/${PROJECT_ID}/terraform/state/messaging-notifications/lock" \
+  -backend-config="username=<your-gitlab-username>" \
+  -backend-config="password=<a GitLab personal access token with 'api' scope>" \
+  -backend-config="lock_method=POST" \
+  -backend-config="unlock_method=DELETE" \
+  -backend-config="retry_wait_min=5"
+
 terraform plan
 terraform apply
 ```
@@ -119,6 +135,36 @@ terraform apply
 Requirements on whatever machine runs `terraform apply`: Terraform itself, and Node.js +
 npm on `PATH` (the AWS Lambda package is built automatically as part of `apply` - see
 below - there is no separate manual build step).
+
+### Or via CI/CD instead
+
+`.gitlab-ci.yml` at the repo root runs this same deploy through a pipeline: `fmt`/
+`validate` on every push, `plan` on merge requests and `main`, `apply`/`destroy` as a
+manual gate on `main` (so nothing deploys without a person clicking it). It needs these
+CI/CD variables set (Settings > CI/CD > Variables) - see the comments at the top of
+`.gitlab-ci.yml` for the full list and types:
+
+- `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN` (the last one only
+  if using temporary/STS creds like Learner Lab issues)
+- `GCP_SA_KEY_FILE` - a GCP service account JSON key, since `gcloud auth
+  application-default login`'s browser flow can't run on a CI runner. Create one with:
+  ```bash
+  gcloud iam service-accounts create saws-ci-deployer
+  gcloud projects add-iam-policy-binding <project-id> \
+    --member="serviceAccount:saws-ci-deployer@<project-id>.iam.gserviceaccount.com" \
+    --role="roles/editor"
+  gcloud iam service-accounts keys create key.json \
+    --iam-account=saws-ci-deployer@<project-id>.iam.gserviceaccount.com
+  ```
+  then paste `key.json`'s contents into a **File**-type CI/CD variable named
+  `GCP_SA_KEY_FILE`.
+- `TF_VAR_*` variables matching everything in `terraform.tfvars.example` (Terraform
+  reads `TF_VAR_x` env vars automatically - no tfvars file needed in CI at all).
+
+**Learner Lab doesn't fit CI/CD well**: sessions expire in a few hours, so you'd be
+manually refreshing the `AWS_SESSION_TOKEN` CI variable before nearly every pipeline run,
+which defeats a lot of the point. This works best once deploying with a permanent IAM
+user's keys.
 
 `terraform validate` passes, and a `terraform plan` with placeholder credentials gets as
 far as computing both cloud sides' deployment packages and stops only at the real
@@ -148,9 +194,6 @@ role instead; no custom policies get attached to it, so it relies on LabRole's o
 (typically broad) permissions.
 
 **Not fully wired for you, by design:**
-- **Terraform state is local** (no S3 backend configured) - fine for one person; if more
-  than one of you applies this, uncomment the `backend "s3"` block in `providers.tf` and
-  point it at a bucket, or you'll get state conflicts.
 - **Cross-cloud AWS credentials** (`gcp_functions_aws_access_key_id/secret`) are passed to
   GCP as plain environment variables - acceptable for a graded sprint demo, not something
   to reuse verbatim for a real deployment (use Secret Manager / a scoped IAM user, not your

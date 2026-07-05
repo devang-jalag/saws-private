@@ -16,7 +16,11 @@ terraform {
     }
   }
 
-  # backend "s3" { } # configure with -backend-config for each environment
+  # GitLab's built-in Terraform-state HTTP backend - no separate S3/GCS bucket to bootstrap.
+  # Address/credentials are supplied via -backend-config at init time (see .gitlab-ci.yml
+  # for CI, or the "local deploys" section of messaging-notifications/README.md for
+  # running this by hand), never hardcoded here.
+  backend "http" {}
 }
 
 provider "aws" {

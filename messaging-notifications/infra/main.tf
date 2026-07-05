@@ -6,7 +6,7 @@ locals {
   }
 
   backend_source_dir = "${path.module}/../aws"
-  aws_build_dir       = "${path.module}/.build/aws-src"
+  aws_build_dir      = "${path.module}/.build/aws-src"
 
   # Rebuild only when the Lambda source or its locked dependencies actually change, not on
   # every apply - filesha1/fileset read the local filesystem directly, no resource needed.

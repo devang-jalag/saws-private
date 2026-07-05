@@ -3,7 +3,7 @@
 // and hands off to the AWS Notifications module to alert the coordinator.
 const { ScanCommand } = require("@aws-sdk/lib-dynamodb");
 const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns");
-const { doc, TableNames } = require("../aws/shared/dynamo");
+const { doc, TableNames } = require("./dynamo");
 const { firestore, COMMUNICATION_LOGS } = require("./firestore");
 const { pickCoordinator } = require("./coordinatorAssignment");
 

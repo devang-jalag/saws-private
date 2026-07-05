@@ -21,10 +21,12 @@ exports.respondToConcern = async (req, res) => {
     return res.status(403).json({ error: { code: "FORBIDDEN", message: "Only coordinators can respond to concerns." } });
   }
 
-  const concernId = req.params ? req.params.id : req.query.id;
+  // req.params is always a truthy {} in Express even with no route params defined, so check
+  // req.params.id itself rather than the params object.
+  const concernId = (req.params && req.params.id) || req.query.id;
   const { responseText } = req.body || {};
-  if (!responseText) {
-    return res.status(400).json({ error: { code: "VALIDATION_ERROR", message: "responseText is required." } });
+  if (!concernId || !responseText) {
+    return res.status(400).json({ error: { code: "VALIDATION_ERROR", message: "id (query param) and responseText are required." } });
   }
 
   const ref = firestore.collection(COMMUNICATION_LOGS).doc(concernId);

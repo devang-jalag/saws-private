@@ -56,6 +56,13 @@ variable "gcp_functions_aws_secret_access_key" {
   sensitive = true
 }
 
+variable "gcp_functions_aws_session_token" {
+  description = "Required when the access key/secret above are temporary STS credentials (e.g. AWS Academy Learner Lab always issues these) - leave empty for a long-lived IAM user's keys."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "existing_lambda_role_arn" {
   description = "Use a pre-existing IAM role (e.g. AWS Academy Learner Lab's LabRole) for every Lambda instead of creating one per function. Learner Lab sandboxes typically block iam:CreateRole/PutRolePolicy - leave empty for a normal AWS account, set to the lab role's ARN (find it with `aws iam list-roles` or the Learner Lab \"AWS Details\" panel) when deploying under a restricted one."
   type        = string

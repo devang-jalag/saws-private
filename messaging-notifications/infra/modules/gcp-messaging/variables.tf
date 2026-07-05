@@ -40,6 +40,13 @@ variable "aws_secret_access_key" {
   sensitive = true
 }
 
+variable "aws_session_token" {
+  description = "Required when aws_access_key_id/secret are temporary STS credentials (e.g. AWS Academy Learner Lab always issues these) - leave empty for a long-lived IAM user's keys."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "users_table_name" {
   type = string
 }

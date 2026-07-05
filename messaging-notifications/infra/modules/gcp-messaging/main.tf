@@ -49,15 +49,18 @@ resource "google_storage_bucket_object" "messaging_source" {
 }
 
 locals {
-  common_env = {
-    AWS_REGION              = var.aws_region
-    USER_POOL_ID            = var.user_pool_id
-    AWS_ACCESS_KEY_ID       = var.aws_access_key_id
-    AWS_SECRET_ACCESS_KEY   = var.aws_secret_access_key
-    USERS_TABLE             = var.users_table_name
-    NOTIFICATIONS_TOPIC_ARN = var.notifications_topic_arn
-    CONCERNS_TOPIC          = google_pubsub_topic.patient_concerns.name
-  }
+  common_env = merge(
+    {
+      AWS_REGION              = var.aws_region
+      USER_POOL_ID            = var.user_pool_id
+      AWS_ACCESS_KEY_ID       = var.aws_access_key_id
+      AWS_SECRET_ACCESS_KEY   = var.aws_secret_access_key
+      USERS_TABLE             = var.users_table_name
+      NOTIFICATIONS_TOPIC_ARN = var.notifications_topic_arn
+      CONCERNS_TOPIC          = google_pubsub_topic.patient_concerns.name
+    },
+    var.aws_session_token != "" ? { AWS_SESSION_TOKEN = var.aws_session_token } : {}
+  )
 }
 
 resource "google_cloudfunctions2_function" "submit_concern" {

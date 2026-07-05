@@ -8,9 +8,13 @@ const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
 
-const [, , sourceDir, buildDir] = process.argv;
+// Read from env vars, not argv: Terraform's local-exec on Windows routes through cmd.exe,
+// whose quoting rules mangle absolute paths containing spaces when passed as quoted CLI
+// args. Env vars sidestep shell quoting entirely.
+const sourceDir = process.env.SOURCE_DIR;
+const buildDir = process.env.BUILD_DIR;
 if (!sourceDir || !buildDir) {
-  console.error("Usage: node build-node-package.js <sourceDir> <buildDir>");
+  console.error("Usage: SOURCE_DIR=<path> BUILD_DIR=<path> node build-node-package.js");
   process.exit(1);
 }
 

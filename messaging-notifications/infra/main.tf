@@ -77,7 +77,11 @@ resource "null_resource" "build_aws_lambdas" {
   }
 
   provisioner "local-exec" {
-    command = "node \"${path.module}/scripts/build-node-package.js\" \"${local.backend_source_dir}\" \"${local.aws_build_dir}\""
+    command = "node ${path.module}/scripts/build-node-package.js"
+    environment = {
+      SOURCE_DIR = local.backend_source_dir
+      BUILD_DIR  = local.aws_build_dir
+    }
   }
 }
 
@@ -133,5 +137,6 @@ module "gcp_messaging" {
   users_table_name        = var.users_table_name
   aws_access_key_id       = var.gcp_functions_aws_access_key_id
   aws_secret_access_key   = var.gcp_functions_aws_secret_access_key
+  aws_session_token       = var.gcp_functions_aws_session_token
   tags                    = local.tags
 }

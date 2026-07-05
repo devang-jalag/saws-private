@@ -14,6 +14,7 @@ messaging-notifications/infra/*.tfvars
 !messaging-notifications/infra/*.tfvars.example
 messaging-notifications/infra/.build/
 messaging-notifications/infra/crash.log
+messaging-notifications/infra/tfplan*
 
 # OS
 .DS_Store

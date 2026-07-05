@@ -12,6 +12,9 @@ the Auth module's Cognito user pool and the Appointments/Users tables **by name*
 variables/env vars), not by depending on their Terraform - it deploys independently of
 whatever your teammates build.
 
+See [API.md](./API.md) for every endpoint with real request/response payloads captured
+from an actual deployment.
+
 ```
 aws/                AWS Lambda side (Notifications)
   shared/            dynamo/response/auth-context helpers

@@ -1,12 +1,48 @@
+# Enabling these here (instead of expecting whoever deploys to `gcloud services enable`
+# by hand first) is what makes "just set new credentials" actually true regardless of
+# which GCP project this points at - discovered the hard way: deploying against a fresh
+# project without eventarc.googleapis.com enabled fails assign_coordinator's Pub/Sub
+# trigger, and without artifactregistry.googleapis.com the first build of every function
+# fails ("Repository gcf-artifacts not found"), since that repo only auto-creates once the
+# API access it depends on is already active.
+locals {
+  required_apis = [
+    "cloudfunctions.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "run.googleapis.com",
+    "pubsub.googleapis.com",
+    "firestore.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "eventarc.googleapis.com",
+    "iam.googleapis.com",
+    "storage.googleapis.com",
+  ]
+}
+
+resource "google_project_service" "required" {
+  for_each = toset(local.required_apis)
+
+  project = var.gcp_project_id
+  service = each.value
+
+  # This is a project-wide setting; other things in the project may depend on these APIs
+  # staying enabled after this module is torn down, so don't disable them on destroy.
+  disable_on_destroy = false
+}
+
 resource "google_firestore_database" "this" {
   project     = var.gcp_project_id
   name        = "(default)"
   location_id = var.gcp_region
   type        = "FIRESTORE_NATIVE"
+
+  depends_on = [google_project_service.required]
 }
 
 resource "google_pubsub_topic" "patient_concerns" {
   name = "patient-concerns"
+
+  depends_on = [google_project_service.required]
 }
 
 resource "google_pubsub_subscription" "assign_coordinator" {
@@ -23,12 +59,16 @@ resource "google_pubsub_subscription" "assign_coordinator" {
 
 resource "google_pubsub_topic" "patient_concerns_dlq" {
   name = "patient-concerns-dlq"
+
+  depends_on = [google_project_service.required]
 }
 
 resource "google_storage_bucket" "functions_source" {
   name                        = "saws-${var.environment}-messaging-functions-${var.gcp_project_id}"
   location                    = var.gcp_region
   uniform_bucket_level_access = true
+
+  depends_on = [google_project_service.required]
 }
 
 # node_modules is deliberately excluded: Cloud Functions gen2 builds from source with
@@ -83,6 +123,8 @@ resource "google_cloudfunctions2_function" "submit_concern" {
     timeout_seconds       = 15
     environment_variables = local.common_env
   }
+
+  depends_on = [google_project_service.required]
 }
 
 resource "google_cloudfunctions2_function" "assign_coordinator" {
@@ -112,6 +154,8 @@ resource "google_cloudfunctions2_function" "assign_coordinator" {
     pubsub_topic   = google_pubsub_topic.patient_concerns.id
     retry_policy   = "RETRY_POLICY_RETRY"
   }
+
+  depends_on = [google_project_service.required]
 }
 
 resource "google_cloudfunctions2_function" "respond_to_concern" {
@@ -134,6 +178,8 @@ resource "google_cloudfunctions2_function" "respond_to_concern" {
     timeout_seconds       = 15
     environment_variables = local.common_env
   }
+
+  depends_on = [google_project_service.required]
 }
 
 resource "google_cloudfunctions2_function" "list_concerns" {
@@ -156,6 +202,8 @@ resource "google_cloudfunctions2_function" "list_concerns" {
     timeout_seconds       = 15
     environment_variables = local.common_env
   }
+
+  depends_on = [google_project_service.required]
 }
 
 # Auth is enforced inside each HTTP function by verifying the Cognito JWT, so the Cloud

@@ -34,7 +34,13 @@ variables:
   TF_IN_AUTOMATION: "true"
 
 default:
-  image: hashicorp/terraform:1.9
+  # hashicorp/terraform's ENTRYPOINT is the terraform binary itself (it's meant to be run
+  # as `docker run hashicorp/terraform plan`) - without overriding it, GitLab's `sh -c
+  # "..."` for every script line becomes `terraform sh -c "..."`, which is exactly the
+  # "no command named sh" error this caused. Clearing it lets plain shell commands run.
+  image:
+    name: hashicorp/terraform:1.9
+    entrypoint: [""]
   before_script:
     - apk add --no-cache nodejs npm curl
     - export GOOGLE_APPLICATION_CREDENTIALS="$GCP_SA_KEY_FILE"

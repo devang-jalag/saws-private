@@ -1,0 +1,22 @@
+[
+  { "appointmentId": "apt_001", "patientId": "user_001", "serviceId": "srv_001", "appointmentDate": "2026-06-10", "status": "COMPLETED", "createdAt": "2026-06-09T11:00:00Z" },
+  { "appointmentId": "apt_002", "patientId": "user_002", "serviceId": "srv_002", "appointmentDate": "2026-06-11", "status": "COMPLETED", "createdAt": "2026-06-10T09:30:00Z" },
+  { "appointmentId": "apt_003", "patientId": "user_003", "serviceId": "srv_001", "appointmentDate": "2026-06-12", "status": "CANCELLED", "createdAt": "2026-06-11T10:15:00Z" },
+  { "appointmentId": "apt_004", "patientId": "user_004", "serviceId": "srv_005", "appointmentDate": "2026-06-14", "status": "COMPLETED", "createdAt": "2026-06-13T08:00:00Z" },
+  { "appointmentId": "apt_005", "patientId": "user_001", "serviceId": "srv_003", "appointmentDate": "2026-06-16", "status": "COMPLETED", "createdAt": "2026-06-15T14:20:00Z" },
+  { "appointmentId": "apt_006", "patientId": "user_005", "serviceId": "srv_001", "appointmentDate": "2026-06-17", "status": "COMPLETED", "createdAt": "2026-06-16T09:00:00Z" },
+  { "appointmentId": "apt_007", "patientId": "user_002", "serviceId": "srv_004", "appointmentDate": "2026-06-18", "status": "COMPLETED", "createdAt": "2026-06-17T13:45:00Z" },
+  { "appointmentId": "apt_008", "patientId": "user_006", "serviceId": "srv_002", "appointmentDate": "2026-06-19", "status": "PENDING", "createdAt": "2026-06-18T10:10:00Z" },
+  { "appointmentId": "apt_009", "patientId": "user_003", "serviceId": "srv_005", "appointmentDate": "2026-06-20", "status": "COMPLETED", "createdAt": "2026-06-19T11:30:00Z" },
+  { "appointmentId": "apt_010", "patientId": "user_007", "serviceId": "srv_001", "appointmentDate": "2026-06-22", "status": "COMPLETED", "createdAt": "2026-06-21T09:15:00Z" },
+  { "appointmentId": "apt_011", "patientId": "user_004", "serviceId": "srv_001", "appointmentDate": "2026-06-24", "status": "CONFIRMED", "createdAt": "2026-06-23T08:40:00Z" },
+  { "appointmentId": "apt_012", "patientId": "user_008", "serviceId": "srv_003", "appointmentDate": "2026-06-25", "status": "COMPLETED", "createdAt": "2026-06-24T10:00:00Z" },
+  { "appointmentId": "apt_013", "patientId": "user_005", "serviceId": "srv_002", "appointmentDate": "2026-06-27", "status": "REJECTED", "createdAt": "2026-06-26T09:20:00Z" },
+  { "appointmentId": "apt_014", "patientId": "user_009", "serviceId": "srv_001", "appointmentDate": "2026-06-29", "status": "COMPLETED", "createdAt": "2026-06-28T14:00:00Z" },
+  { "appointmentId": "apt_015", "patientId": "user_006", "serviceId": "srv_005", "appointmentDate": "2026-06-30", "status": "COMPLETED", "createdAt": "2026-06-29T11:10:00Z" },
+  { "appointmentId": "apt_016", "patientId": "user_010", "serviceId": "srv_002", "appointmentDate": "2026-07-01", "status": "CONFIRMED", "createdAt": "2026-06-30T09:00:00Z" },
+  { "appointmentId": "apt_017", "patientId": "user_001", "serviceId": "srv_004", "appointmentDate": "2026-07-02", "status": "COMPLETED", "createdAt": "2026-07-01T10:30:00Z" },
+  { "appointmentId": "apt_018", "patientId": "user_007", "serviceId": "srv_001", "appointmentDate": "2026-07-03", "status": "PENDING", "createdAt": "2026-07-02T08:15:00Z" },
+  { "appointmentId": "apt_019", "patientId": "user_002", "serviceId": "srv_005", "appointmentDate": "2026-07-05", "status": "CONFIRMED", "createdAt": "2026-07-04T13:00:00Z" },
+  { "appointmentId": "apt_020", "patientId": "user_009", "serviceId": "srv_001", "appointmentDate": "2026-07-06", "status": "COMPLETED", "createdAt": "2026-07-05T09:45:00Z" }
+]

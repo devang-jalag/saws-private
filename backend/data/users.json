@@ -1,0 +1,14 @@
+[
+  { "userId": "user_001", "role": "PATIENT", "fullName": "Ava Thompson", "email": "ava.t@example.com", "createdAt": "2026-06-02T09:12:00Z", "status": "ACTIVE" },
+  { "userId": "user_002", "role": "PATIENT", "fullName": "Liam Chen", "email": "liam.c@example.com", "createdAt": "2026-06-04T14:20:00Z", "status": "ACTIVE" },
+  { "userId": "user_003", "role": "PATIENT", "fullName": "Sofia Martinez", "email": "sofia.m@example.com", "createdAt": "2026-06-08T11:05:00Z", "status": "ACTIVE" },
+  { "userId": "user_004", "role": "PATIENT", "fullName": "Noah Williams", "email": "noah.w@example.com", "createdAt": "2026-06-11T08:45:00Z", "status": "ACTIVE" },
+  { "userId": "user_005", "role": "PATIENT", "fullName": "Emma Davis", "email": "emma.d@example.com", "createdAt": "2026-06-15T16:30:00Z", "status": "ACTIVE" },
+  { "userId": "user_006", "role": "PATIENT", "fullName": "Oliver Brown", "email": "oliver.b@example.com", "createdAt": "2026-06-19T10:00:00Z", "status": "ACTIVE" },
+  { "userId": "user_007", "role": "PATIENT", "fullName": "Mia Wilson", "email": "mia.w@example.com", "createdAt": "2026-06-24T13:15:00Z", "status": "ACTIVE" },
+  { "userId": "user_008", "role": "PATIENT", "fullName": "Ethan Moore", "email": "ethan.m@example.com", "createdAt": "2026-06-29T09:50:00Z", "status": "ACTIVE" },
+  { "userId": "user_009", "role": "PATIENT", "fullName": "Isabella Taylor", "email": "isabella.t@example.com", "createdAt": "2026-07-02T12:40:00Z", "status": "ACTIVE" },
+  { "userId": "user_010", "role": "PATIENT", "fullName": "James Anderson", "email": "james.a@example.com", "createdAt": "2026-07-05T15:10:00Z", "status": "ACTIVE" },
+  { "userId": "coord_001", "role": "COORDINATOR", "fullName": "Dr. Priya Nair", "email": "priya.n@example.com", "createdAt": "2026-05-20T09:00:00Z", "status": "ACTIVE" },
+  { "userId": "coord_002", "role": "COORDINATOR", "fullName": "Marcus Lee", "email": "marcus.l@example.com", "createdAt": "2026-05-20T09:00:00Z", "status": "ACTIVE" }
+]

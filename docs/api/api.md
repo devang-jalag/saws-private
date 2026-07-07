@@ -1,5 +1,9 @@
 # API Research Notes
 
+> **Sprint 1 planning notes.** For the Sprint 2 API contract (request/response
+> bodies, error codes, and what's actually implemented vs. proposed), see
+> [api-contract.md](api-contract.md).
+
 ## Authentication APIs
 
 POST /register

@@ -22,11 +22,14 @@ test-appointments-backend:
   only:
     changes:
       - backend/appointments/**/*
+      - .gitlab-ci.yml
 
 #terraform formatting check
 terraform-validate:
   stage: plan
-  image: hashicorp/terraform:latest
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
   script:
     - cd terraform/modules/appointments
     - terraform init -backend=false
@@ -34,3 +37,4 @@ terraform-validate:
   only:
     changes:
       - terraform/modules/appointments/**/*
+      - .gitlab-ci.yml

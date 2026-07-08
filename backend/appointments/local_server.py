@@ -88,8 +88,51 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         body = self._read_body() if method in ['POST', 'PUT'] else None
 
-        # route to the correct handler
-        if path == '/services' or path.startswith('/services/'):
+        elif path == '/swagger.yaml':
+            try:
+                with open('../../docs/api/swagger.yaml', 'rb') as f:
+                    content = f.read()
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/yaml')
+                self.end_headers()
+                self.wfile.write(content)
+            except FileNotFoundError:
+                self.send_response(404)
+                self.end_headers()
+                self.wfile.write(b"swagger.yaml not found")
+            return
+
+        elif path == '/docs':
+            html = """
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>SwaggerUI</title>
+              <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+            </head>
+            <body>
+            <div id="swagger-ui"></div>
+            <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js" crossorigin></script>
+            <script>
+              window.onload = () => {
+                window.ui = SwaggerUIBundle({
+                  url: '/swagger.yaml',
+                  dom_id: '#swagger-ui',
+                });
+              };
+            </script>
+            </body>
+            </html>
+            """
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html')
+            self.end_headers()
+            self.wfile.write(html.encode('utf-8'))
+            return
+
+        elif path == '/services' or path.startswith('/services/'):
             parts = path.strip('/').split('/')
             pp = {'id': parts[1]} if len(parts) > 1 else None
             event = self._build_event(method, body, pp, qparams or None)

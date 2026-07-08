@@ -64,6 +64,12 @@ def lambda_handler(event, context):
         )
         # auto-confirm so the user can log in right away (Learner Lab: no email step)
         cognito.admin_confirm_sign_up(UserPoolId=USER_POOL_ID, Username=username)
+        # add the user to their role's Cognito group (role-based access)
+        cognito.admin_add_user_to_group(
+            UserPoolId=USER_POOL_ID,
+            Username=username,
+            GroupName=role,
+        )
     except cognito.exceptions.UsernameExistsException:
         return _resp(409, {"message": "Username already exists"})
     except cognito.exceptions.InvalidPasswordException as e:

@@ -15,20 +15,14 @@ def _caesar(text, shift):
 def lambda_handler(event, context):
     username = event["userName"]
     session  = event["request"].get("session") or []
-    # count how many custom challenges already happened
     done = len([s for s in session if s.get("challengeName") == "CUSTOM_CHALLENGE"])
-
     item = table.get_item(Key={"userId": username}).get("Item", {})
-
     if done == 0:
-        # stage 2: security question
         event["response"]["publicChallengeParameters"]  = {"stage": "2", "question": item.get("securityQuestion", "")}
         event["response"]["privateChallengeParameters"] = {"type": "QA", "expected": item.get("securityAnswerHash", "")}
     else:
-        # stage 3: Caesar cipher
         base  = item.get("cipherBaseCode", "")
         shift = int(item.get("cipherShift", 0))
         event["response"]["publicChallengeParameters"]  = {"stage": "3", "clue": base}
         event["response"]["privateChallengeParameters"] = {"type": "CIPHER", "expected": _caesar(base, shift)}
-
     return event

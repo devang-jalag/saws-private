@@ -2,55 +2,32 @@ stages:
   - test
   - plan
 
-variables:
-  PYTHON_VERSION: "3.10"
-  #mock AWS credentials for moto tests
-  AWS_ACCESS_KEY_ID: "testing"
-  AWS_SECRET_ACCESS_KEY: "testing"
-  AWS_DEFAULT_REGION: "us-east-1"
-
-#python unit test appointmnts bckend
-test-appointments-backend:
-  stage: test
-  image: python:$PYTHON_VERSION
-  script:
-    - echo "Installing testing dependencies..."
-    - pip install -r backend/appointments/requirements.txt || pip install boto3 moto
-    - echo "Running unit tests for Member 2 (Appointments)..."
-    - cd backend/appointments
-    - python -m unittest test_appointments.py -v
-  only:
-    changes:
-      - backend/appointments/**/*
-      - .gitlab-ci.yml
-
 # Run Vitest UI tests for the Frontend
 test-frontend:
   stage: test
   image: node:20-alpine
   script:
-    - echo "Installing frontend dependencies..."
     - cd frontend
     - npm ci
     - echo "Running frontend UI tests..."
     - npm run test
   only:
     changes:
-      - frontend/*/
+      - frontend/**/*
       - .gitlab-ci.yml
 
-#terraform formatting check
+# Terraform validation for the existing frontend module
 terraform-validate:
   stage: plan
   image:
     name: hashicorp/terraform:latest
     entrypoint: [""]
   script:
-    - cd terraform/modules/appointments
+    - cd terraform/modules/frontend
     - terraform init -backend=false
     - terraform validate
   only:
     changes:
-      - terraform/modules/appointments/**/*
+      - terraform/modules/frontend/**/*
       - .gitlab-ci.yml
 

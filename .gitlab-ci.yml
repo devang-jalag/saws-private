@@ -1,0 +1,30 @@
+stages:
+  - build
+  - plan
+
+# Install check for the Analytics & AI backend (no test suite yet)
+build-analytics-backend:
+  stage: build
+  image: node:20-alpine
+  script:
+    - cd backend
+    - npm ci
+  only:
+    changes:
+      - backend/**/*
+      - .gitlab-ci.yml
+
+# Terraform validation for the analytics Cloud Run module
+terraform-validate:
+  stage: plan
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  script:
+    - cd terraform/modules/analytics
+    - terraform init -backend=false
+    - terraform validate
+  only:
+    changes:
+      - terraform/modules/analytics/**/*
+      - .gitlab-ci.yml

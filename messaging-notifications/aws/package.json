@@ -1,0 +1,23 @@
+{
+  "name": "saws-notifications",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AWS Lambda handlers for the SAWS Notifications module (SNS/SQS fan-out + reminders).",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand",
+    "seed:local": "node scripts/seedLocalDynamo.js",
+    "dev:subscriber": "node scripts/localInvokeSubscriber.js",
+    "dev:get-mine": "node scripts/localInvokeGetMine.js",
+    "dev:reminder": "node scripts/localInvokeReminder.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.600.0",
+    "@aws-sdk/client-sns": "^3.600.0",
+    "@aws-sdk/lib-dynamodb": "^3.600.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

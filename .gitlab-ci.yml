@@ -95,3 +95,7 @@ terraform-validate-analytics:
     changes:
       - terraform/modules/analytics/**/*
       - .gitlab-ci.yml
+
+# Messaging & Notifications module CI (Member 3/4)
+include:
+  - local: "messaging-notifications/.gitlab-ci.yml"

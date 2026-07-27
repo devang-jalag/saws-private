@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// Cognito ID tokens are exchanged for a Firebase custom token out-of-band so that
+// request.auth.uid here equals the Cognito `sub` used as patientId/coordinatorId.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /communication_logs/{concernId} {
+      allow read: if request.auth != null &&
+        (request.auth.uid == resource.data.patientId || request.auth.uid == resource.data.coordinatorId);
+      allow write: if false; // only Cloud Functions (admin SDK) write this collection
+
+      match /messages/{messageId} {
+        allow read, create: if request.auth != null &&
+          (request.auth.uid == get(/databases/$(database)/documents/communication_logs/$(concernId)).data.patientId ||
+           request.auth.uid == get(/databases/$(database)/documents/communication_logs/$(concernId)).data.coordinatorId);
+        allow update, delete: if false;
+      }
+    }
+  }
+}

@@ -1,141 +1,59 @@
 # SmartCare Appointment and Wellness System (SAWS)
 
-## Analytics & AI Module (Sprint 2)
+## Project Structure
 
-Coordinator dashboard, feedback form, and sentiment analysis. Backend is a
-mock API with sample data and a Comprehend-shaped sentiment stub
-(`backend/services/sentiment.js`) that can be swapped for the real AWS
-Comprehend SDK call later.
+This is a clean, structured monorepo designed to keep frontend, backend APIs, serverless functions, and infrastructure code strictly separated:
 
-## Chatbot Module (Sprint 2)
-
-AWS Lex virtual assistant integrated via Express backend. Handles appointment
-lookups, concern submission, and FAQ intents.
-
-### Chatbot Intents
-- `SubmitConcernIntent` — concern submission flow
-- `FAQIntent` — booking/cancellation help
-- `AppointmentLookupIntent` — lookup by reference code
-
-### Architecture Flow
-1. User sends a message through the chatbot interface.
-2. AWS Lex identifies the matching intent.
-3. Lex invokes AWS Lambda for fulfillment.
-4. Lambda reads from / writes to DynamoDB.
-5. Lex sends the final response back to the user.
-
-## Running locally
-
-```bash
-# terminal 1 — unified backend (analytics + chatbot)
-cd backend && npm install && npm start   # http://localhost:4000
-
-# terminal 2 — frontend
-cd frontend && npm install && npm run dev  # http://localhost:5173
+```text
+/
+├── frontend/             # React App (deployed to GCP Cloud Run)
+├── backend/              # ALL backend logic
+│   ├── api/              # Node.js Express API (Analytics, Chatbot, Feedback - Cloud Run)
+│   ├── appointments/     # AWS Lambda (Python) - Appointments, Doctors, Services
+│   ├── auth/             # AWS Lambda (Python) - Cognito MFA flow
+│   ├── messaging/        # GCP Cloud Functions (Node.js) - Pub/Sub
+│   └── notifications/    # AWS Lambda (Node.js) - SNS/SQS
+├── terraform/            # Infrastructure as Code
+│   ├── modules/          # Reusable Terraform modules
+│   │   ├── analytics/
+│   │   ├── appointments/
+│   │   ├── frontend/
+│   │   └── messaging-notifications/
+├── docs/                 # API Contracts and Documentation
+└── .gitlab-ci.yml        # Unified CI Pipeline
 ```
 
+## Running Locally
 
+### 1. Unified Backend API
+The Express backend serves Analytics, Feedback, and routes Chatbot requests to AWS Lex.
 
-## Current Working Features
-The following chatbot functions are currently working in the Sprint 2 prototype:
-- Navigation support for appointment-related guidance.
-- Appointment lookup using an appointment reference code.
-- Concern submission flow that prompts the user and confirms submission.
-- Basic FAQ support for registration and platform help.
+```bash
+cd backend/api
+npm install
+npm run dev
+# Server runs on http://localhost:4000
+```
 
-## Chatbot Intents
-Current intents implemented in the bot:
-- `SubmitConcernIntent`
-- `FAQIntent`
-- `AppointmentLookupIntent`
+### 2. Frontend App
+The React application built with Vite and MUI.
 
-Planned / future intents:
-- `NavigationIntent`
-- `WellnessPackageInquiryIntent`.
+```bash
+cd frontend
+npm install
+npm run dev
+# App runs on http://localhost:5173
+```
 
-## Intent Details
-### SubmitConcernIntent
-Sample utterances currently used:
-- `I want to submit a concern`
-- `I have a complaint`
-- `I need support`
-- `I want to report an issue`
+## Features Implemented
+- **User Management:** Multi-factor authentication via Cognito and Lambda triggers.
+- **Appointments:** REST APIs using Python Lambdas and DynamoDB.
+- **Messaging:** Patient-to-Coordinator support tickets via GCP Pub/Sub and Firestore.
+- **Notifications:** Booking and reminder events via AWS SNS/SQS.
+- **Analytics & Feedback:** Sentiment analysis (Mock Comprehend) and dashboards.
+- **Chatbot:** AWS Lex integration for appointment lookups and FAQ.
 
-This intent maps directly to the requirements for the project that the chatbot should accept patient concerns or support requests and forward them through the system. 
-
-### FAQIntent
-
-Sample utterances currently used:
-- `How do I {faqTopic}` ---> eg. `How do I cancel`, `How do I book`
-- `Help me with {faqTopic}`
-- `I need help with {faqTopic}`
-- `How do I book an appointment`
-- `How do I cancel an appointment`
-
-This intent supports the required FAQ function of the virtual assistant. 
-
-## Slot Type
-### faqTopicType
-Custom slot values currently used (faqTopic):
-- `booking`
-- `book`
-- `book appointment`
-- `make appointment`
-- `cancel`
-- `canceling`
-- `cancel appointment`
-
-### AppointmentLookupIntent
-These values support FAQ utterances related to booking and cancellation help, which are part of the user support expectations described in the project document.
-
-## Architecture Flow
-1. A user sends a message through the Lex console or chatbot interface.
-2. AWS Lex identifies the matching intent.
-3. Lex collects slot values when needed.
-4. Lex invokes AWS Lambda for fulfillment.
-5. Lambda processes the request and reads from or writes to DynamoDB where applicable.
-6. Lambda returns the response to Lex.
-7. Lex sends the final chatbot response back to the user.
-
-## Sample Working Tests
-These are the tests that currently work and can be demonstrated now:
-
-| Intent | Input | Expected Result |
-|--------|-------|----------------|
-| SubmitConcernIntent | `I want to submit a concern` | Prompts the user for concern details and confirms submission. |
-| SubmitConcernIntent | `I have a complaint` | Routes the user into the concern submission flow. |
-| SubmitConcernIntent | `I need support` | Routes the user into the concern or support flow. |
-| SubmitConcernIntent | `I want to report an issue` | Prompts the user to submit issue details. |
-| FAQIntent | `How do I book an appointment` | Returns booking help information. |
-| FAQIntent | `How do I cancel an appointment` | Returns cancellation help information. |
-| AppointmentLookupIntent | `Check appointment with code APT1001` | Returns appointment details for the provided appointment reference code. |
-
-
-## Suggested Extra Tests
-The project also expects broader chatbot testing, Lambda event testing, and documentation evidence. Good next tests to add are:
-- `Help me with booking`
-- `I need help with cancel appointment`
-- `Show appointment details for APT1002`
-- `Check appointment with code APT4040`
-- `What wellness packages are available`. (Future)
-
-## Current Status
-Implemented now:
-- Lex bot setup.
-- Working intents for concern submission, FAQ, and appointment lookup.
-- Lambda fulfillment for the currently working chatbot flows.
-- Initial chatbot testing using sample utterances.
-
-`.env file`
-PORT=5000
-AWS_REGION=us-east-1
-LEX_BOT_ID=0JCWF5YS9M
-LEX_BOT_ALIAS_ID=TSTALIASID
-LEX_LOCALE_ID=en_US
-AWS_ACCESS_KEY_ID=AKIA5I4GD5DCHVHARHMP
-AWS_SECRET_ACCESS_KEY=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``
-
-## Conclusion
-
-The application when heading to Chatbot, while running the backend server, the application should work and start sending and recieving requests from Lex which is interacting with DynamoDB by using the Lambda function.
->>>>>>> origin/chatbot-sprint2
+## Documentation
+- [API Contract](./docs/api-contract.md)
+- [Messaging README](./docs/messaging-README.md)
+- [Messaging API](./docs/messaging-API.md)

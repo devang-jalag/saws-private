@@ -5,19 +5,16 @@ stages:
 
 variables:
   PYTHON_VERSION: "3.10"
-  # mock AWS credentials for moto tests
-  AWS_ACCESS_KEY_ID: "testing"
-  AWS_SECRET_ACCESS_KEY: "testing"
   AWS_DEFAULT_REGION: "us-east-1"
 
-# Python unit tests - Appointments backend (Member 2)
+# Python unit tests - Appointments backend
 test-appointments-backend:
   stage: test
   image: python:$PYTHON_VERSION
   script:
     - echo "Installing testing dependencies..."
     - pip install -r backend/appointments/requirements.txt || pip install boto3 moto
-    - echo "Running unit tests for Member 2 (Appointments)..."
+    - echo "Running unit tests for Appointments..."
     - cd backend/appointments
     - python -m unittest test_appointments.py -v
   only:
@@ -25,7 +22,7 @@ test-appointments-backend:
       - backend/appointments/**/*
       - .gitlab-ci.yml
 
-# Vitest UI tests - Frontend (Member 6)
+# Vitest UI tests - Frontend
 test-frontend:
   stage: test
   image: node:20-alpine
@@ -39,19 +36,19 @@ test-frontend:
       - frontend/**/*
       - .gitlab-ci.yml
 
-# Install check - Analytics & AI backend (Member 5)
-build-analytics-backend:
+# Install check - API backend
+build-backend-api:
   stage: build
   image: node:20-alpine
   script:
-    - cd backend
+    - cd backend/api
     - npm ci
   only:
     changes:
-      - backend/**/*
+      - backend/api/**/*
       - .gitlab-ci.yml
 
-# Terraform validation - Appointments backend module (Member 2)
+# Terraform validation
 terraform-validate-appointments:
   stage: plan
   image:
@@ -66,7 +63,6 @@ terraform-validate-appointments:
       - terraform/modules/appointments/**/*
       - .gitlab-ci.yml
 
-# Terraform validation - Frontend module (Member 6)
 terraform-validate-frontend:
   stage: plan
   image:
@@ -81,7 +77,6 @@ terraform-validate-frontend:
       - terraform/modules/frontend/**/*
       - .gitlab-ci.yml
 
-# Terraform validation - Analytics module (Member 5)
 terraform-validate-analytics:
   stage: plan
   image:
@@ -96,6 +91,45 @@ terraform-validate-analytics:
       - terraform/modules/analytics/**/*
       - .gitlab-ci.yml
 
-# Messaging & Notifications module CI (Member 3/4)
-include:
-  - local: "messaging-notifications/.gitlab-ci.yml"
+terraform-validate-messaging-notifications:
+  stage: plan
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  script:
+    - cd terraform/modules/messaging-notifications
+    - terraform init -backend=false
+    - terraform validate
+  only:
+    changes:
+      - terraform/modules/messaging-notifications/**/*
+      - .gitlab-ci.yml
+
+terraform-validate-auth:
+  stage: plan
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  script:
+    - cd terraform/modules/auth
+    - terraform init -backend=false
+    - terraform validate
+  only:
+    changes:
+      - terraform/modules/auth/**/*
+      - .gitlab-ci.yml
+
+terraform-validate-chatbot:
+  stage: plan
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  script:
+    - cd terraform/modules/chatbot
+    - terraform init -backend=false
+    - terraform validate
+  only:
+    changes:
+      - terraform/modules/chatbot/**/*
+      - .gitlab-ci.yml
+

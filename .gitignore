@@ -12,16 +12,11 @@ venv/
 *.tfstate.backup
 *.tfplan
 .terraform.lock.hcl
-messaging-notifications/infra/.terraform/
-messaging-notifications/infra/.terraform.lock.hcl
-messaging-notifications/infra/**/.terraform/
-messaging-notifications/infra/*.tfstate
-messaging-notifications/infra/*.tfstate.*
-messaging-notifications/infra/*.tfvars
-!messaging-notifications/infra/*.tfvars.example
-messaging-notifications/infra/.build/
-messaging-notifications/infra/crash.log
-messaging-notifications/infra/tfplan*
+*.tfvars
+!*.tfvars.example
+.build/
+crash.log
+tfplan*
 
 # Node
 node_modules/
@@ -40,3 +35,7 @@ Thumbs.db
 
 # Zip artifacts
 *.zip
+
+*.json
+!package.json
+!package-lock.json

@@ -1,0 +1,12 @@
+[
+  { "feedbackId": "fb_001", "patientId": "user_001", "serviceId": "srv_001", "appointmentId": "apt_001", "rating": 5, "comment": "The session was very helpful and the booking process was easy.", "submittedAt": "2026-06-10T18:00:00Z" },
+  { "feedbackId": "fb_002", "patientId": "user_002", "serviceId": "srv_002", "appointmentId": "apt_002", "rating": 4, "comment": "The doctor was very helpful and professional.", "submittedAt": "2026-06-11T19:10:00Z" },
+  { "feedbackId": "fb_003", "patientId": "user_004", "serviceId": "srv_005", "appointmentId": "apt_004", "rating": 3, "comment": "The class was okay but the waiting time was long.", "submittedAt": "2026-06-14T20:00:00Z" },
+  { "feedbackId": "fb_004", "patientId": "user_001", "serviceId": "srv_003", "appointmentId": "apt_005", "rating": 5, "comment": "The nutrition counseling was excellent and affordable.", "submittedAt": "2026-06-16T20:30:00Z" },
+  { "feedbackId": "fb_005", "patientId": "user_005", "serviceId": "srv_001", "appointmentId": "apt_006", "rating": 2, "comment": "The system was confusing and my appointment was delayed.", "submittedAt": "2026-06-17T21:00:00Z" },
+  { "feedbackId": "fb_006", "patientId": "user_002", "serviceId": "srv_004", "appointmentId": "apt_007", "rating": 4, "comment": "Physiotherapy session went smoothly, staff were friendly.", "submittedAt": "2026-06-18T18:45:00Z" },
+  { "feedbackId": "fb_007", "patientId": "user_003", "serviceId": "srv_005", "appointmentId": "apt_009", "rating": 5, "comment": "Loved the yoga class, very relaxing and well organized.", "submittedAt": "2026-06-20T19:20:00Z" },
+  { "feedbackId": "fb_008", "patientId": "user_007", "serviceId": "srv_001", "appointmentId": "apt_010", "rating": 1, "comment": "I could not find my appointment details easily and the wait time was too long.", "submittedAt": "2026-06-22T20:15:00Z" },
+  { "feedbackId": "fb_009", "patientId": "user_008", "serviceId": "srv_003", "appointmentId": "apt_012", "rating": 4, "comment": "Good advice from the nutrition counselor, would book again.", "submittedAt": "2026-06-25T18:30:00Z" },
+  { "feedbackId": "fb_010", "patientId": "user_009", "serviceId": "srv_001", "appointmentId": "apt_014", "rating": 5, "comment": "The mental wellness session was excellent and the coordinator was supportive.", "submittedAt": "2026-06-29T21:40:00Z" }
+]

@@ -1,15 +1,16 @@
 stages:
   - test
+  - build
   - plan
 
 variables:
   PYTHON_VERSION: "3.10"
-  #mock AWS credentials for moto tests
+  # mock AWS credentials for moto tests
   AWS_ACCESS_KEY_ID: "testing"
   AWS_SECRET_ACCESS_KEY: "testing"
   AWS_DEFAULT_REGION: "us-east-1"
 
-#python unit test appointmnts bckend
+# Python unit tests - Appointments backend (Member 2)
 test-appointments-backend:
   stage: test
   image: python:$PYTHON_VERSION
@@ -24,8 +25,34 @@ test-appointments-backend:
       - backend/appointments/**/*
       - .gitlab-ci.yml
 
-#terraform formatting check
-terraform-validate:
+# Vitest UI tests - Frontend (Member 6)
+test-frontend:
+  stage: test
+  image: node:20-alpine
+  script:
+    - cd frontend
+    - npm ci
+    - echo "Running frontend UI tests..."
+    - npm run test
+  only:
+    changes:
+      - frontend/**/*
+      - .gitlab-ci.yml
+
+# Install check - Analytics & AI backend (Member 5)
+build-analytics-backend:
+  stage: build
+  image: node:20-alpine
+  script:
+    - cd backend
+    - npm ci
+  only:
+    changes:
+      - backend/**/*
+      - .gitlab-ci.yml
+
+# Terraform validation - Appointments backend module (Member 2)
+terraform-validate-appointments:
   stage: plan
   image:
     name: hashicorp/terraform:latest
@@ -37,4 +64,34 @@ terraform-validate:
   only:
     changes:
       - terraform/modules/appointments/**/*
+      - .gitlab-ci.yml
+
+# Terraform validation - Frontend module (Member 6)
+terraform-validate-frontend:
+  stage: plan
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  script:
+    - cd terraform/modules/frontend
+    - terraform init -backend=false
+    - terraform validate
+  only:
+    changes:
+      - terraform/modules/frontend/**/*
+      - .gitlab-ci.yml
+
+# Terraform validation - Analytics module (Member 5)
+terraform-validate-analytics:
+  stage: plan
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  script:
+    - cd terraform/modules/analytics
+    - terraform init -backend=false
+    - terraform validate
+  only:
+    changes:
+      - terraform/modules/analytics/**/*
       - .gitlab-ci.yml

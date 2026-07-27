@@ -1,4 +1,4 @@
-output "lex_bot_id" {
-  description = "The ID of the AWS Lex Bot"
-  value       = aws_lexv2models_bot.saws_bot.id
+output "dialogflow_agent_id" {
+  description = "The ID of the GCP Dialogflow Agent"
+  value       = google_dialogflow_agent.saws_agent.id
 }

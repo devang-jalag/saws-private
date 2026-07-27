@@ -1,38 +1,38 @@
 const express = require("express");
-const { LexRuntimeV2Client, RecognizeTextCommand } = require("@aws-sdk/client-lex-runtime-v2");
+const dialogflow = require("@google-cloud/dialogflow");
 
 const router = express.Router();
 
-const lexClient = new LexRuntimeV2Client({
-  region: process.env.AWS_REGION || "us-east-1",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "mock-key",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "mock-secret",
-  },
-});
+// The GOOGLE_APPLICATION_CREDENTIALS environment variable should be set in the environment
+// pointing to the GCP Service Account JSON key.
+const sessionClient = new dialogflow.SessionsClient();
 
 router.post("/message", async (req, res) => {
   const { message, sessionId } = req.body;
+  const projectId = process.env.GCP_PROJECT_ID || "saws-lambda-legends-503718";
+  
+  const currentSessionId = sessionId || "default-user-session";
+  const sessionPath = sessionClient.projectAgentSessionPath(projectId, currentSessionId);
+
+  const request = {
+    session: sessionPath,
+    queryInput: {
+      text: {
+        text: message,
+        languageCode: "en-US",
+      },
+    },
+  };
 
   try {
-    const command = new RecognizeTextCommand({
-      botId: process.env.LEX_BOT_ID || "mock-bot-id",
-      botAliasId: process.env.LEX_BOT_ALIAS_ID || "mock-alias-id",
-      localeId: process.env.LEX_LOCALE_ID || "en_US",
-      sessionId: sessionId || "default-user-session",
-      text: message,
-    });
+    const responses = await sessionClient.detectIntent(request);
+    const result = responses[0].queryResult;
 
-    const lexResponse = await lexClient.send(command);
-
-    const reply =
-      lexResponse.messages && lexResponse.messages.length > 0
-        ? lexResponse.messages.map((msg) => msg.content).join(" ")
-        : "Sorry, I could not understand your request.";
+    const reply = result.fulfillmentText || "Sorry, I could not understand your request.";
 
     res.json({ reply });
   } catch (error) {
-    console.error("Lex error:", error);
+    console.error("Dialogflow error:", error);
     res.status(500).json({
       reply: "Chatbot service is currently unavailable.",
     });

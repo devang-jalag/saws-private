@@ -20,7 +20,7 @@ terraform {
   # Address/credentials are supplied via -backend-config at init time (see .gitlab-ci.yml
   # for CI, or the "local deploys" section of messaging-notifications/README.md for
   # running this by hand), never hardcoded here.
-  backend "http" {}
+  # backend "http" {}
 }
 
 provider "aws" {

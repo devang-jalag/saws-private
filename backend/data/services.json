@@ -1,0 +1,7 @@
+[
+  { "serviceId": "srv_001", "serviceName": "Mental Wellness Session", "category": "Wellness", "price": 50.0, "status": "ACTIVE", "createdAt": "2026-05-01T09:00:00Z" },
+  { "serviceId": "srv_002", "serviceName": "General Physician Consultation", "category": "Healthcare", "price": 40.0, "status": "ACTIVE", "createdAt": "2026-05-01T09:00:00Z" },
+  { "serviceId": "srv_003", "serviceName": "Nutrition Counseling", "category": "Wellness", "price": 35.0, "status": "ACTIVE", "createdAt": "2026-05-01T09:00:00Z" },
+  { "serviceId": "srv_004", "serviceName": "Physiotherapy Session", "category": "Healthcare", "price": 60.0, "status": "ACTIVE", "createdAt": "2026-05-01T09:00:00Z" },
+  { "serviceId": "srv_005", "serviceName": "Yoga & Mindfulness Class", "category": "Wellness", "price": 25.0, "status": "ACTIVE", "createdAt": "2026-05-01T09:00:00Z" }
+]

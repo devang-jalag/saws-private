@@ -1,15 +1,19 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Notifications Module (AWS Only)
+# Provisions SNS, SQS, DynamoDB, Lambda functions, EventBridge, and API Gateway
+# for the SAWS notification system.
+# ─────────────────────────────────────────────────────────────────────────────
+
 locals {
   tags = {
     Project     = "SAWS"
-    Module      = "messaging-notifications"
+    Module      = "notifications"
     Environment = var.environment
   }
 
   backend_source_dir = "${path.module}/../../../backend/notifications"
   aws_build_dir      = "${path.module}/.build/aws-src"
 
-  # Rebuild only when the Lambda source or its locked dependencies actually change, not on
-  # every apply - filesha1/fileset read the local filesystem directly, no resource needed.
   aws_source_hash = sha1(join("", [
     for f in sort(fileset(local.backend_source_dir, "**")) :
     filesha1("${local.backend_source_dir}/${f}")
@@ -44,8 +48,6 @@ locals {
       handler = "reminder.handler"
       env     = local.common_env
       policy_statements = [
-        # Appointments table is owned by the Appointments module; this is a cross-module
-        # read-only Scan, not full access to that table.
         { actions = ["dynamodb:Scan"], resources = ["arn:aws:dynamodb:${var.aws_region}:*:table/${var.appointments_table_name}"] },
         { actions = ["sns:Publish"], resources = [aws_sns_topic.notifications.arn] },
       ]
@@ -53,24 +55,19 @@ locals {
   }
 }
 
-# Created at root (not inside modules/notifications) so its ARN can flow into the Lambda
-# environment variables without a lambda <-> notifications-module dependency cycle: the
-# Lambdas need the topic ARN as an env var, and the notifications module needs the
-# Lambdas' ARNs/names for its SQS event-source-mapping and EventBridge target.
+# SNS Topic for notification fan-out
 resource "aws_sns_topic" "notifications" {
   name = "saws-${var.environment}-notifications"
   tags = local.tags
 }
 
+# DynamoDB table for storing notifications
 module "database" {
   source = "./modules/database"
   tags   = local.tags
 }
 
-# Stages a production-only copy of aws/ (source + a clean `npm ci --omit=dev` node_modules)
-# once, so all three Lambdas zip from the same clean build instead of each running their
-# own npm ci in parallel against the same directory (which would race). Requires Node.js +
-# npm on whatever machine runs `terraform apply` - no other manual step.
+# Build step: stages a production-only copy of the Lambda source
 resource "null_resource" "build_aws_lambdas" {
   triggers = {
     source_hash = local.aws_source_hash
@@ -85,8 +82,7 @@ resource "null_resource" "build_aws_lambdas" {
   }
 }
 
-# The three Lambdas this module owns: the SQS-triggered fan-out subscriber, the reader
-# behind GET /notifications/me, and the scheduled appointment-reminder job.
+# Lambda functions: SQS subscriber, GET /notifications/me, and scheduled reminders
 module "lambda" {
   source   = "./modules/compute"
   for_each = local.lambda_functions
@@ -102,7 +98,8 @@ module "lambda" {
   depends_on = [null_resource.build_aws_lambdas]
 }
 
-module "notifications" {
+# SQS queues, EventBridge schedule, API Gateway for notifications
+module "notifications_infra" {
   source = "./modules/notifications"
 
   environment = var.environment
@@ -122,21 +119,4 @@ module "notifications" {
   user_pool_client_id = var.user_pool_client_id
 
   tags = local.tags
-}
-
-module "gcp_messaging" {
-  source = "./modules/gcp-messaging"
-
-  environment             = var.environment
-  gcp_project_id          = var.gcp_project_id
-  gcp_region              = var.gcp_region
-  source_dir              = "${path.module}/../../../backend/messaging"
-  aws_region              = var.aws_region
-  user_pool_id            = var.user_pool_id
-  notifications_topic_arn = aws_sns_topic.notifications.arn
-  users_table_name        = var.users_table_name
-  aws_access_key_id       = var.gcp_functions_aws_access_key_id
-  aws_secret_access_key   = var.gcp_functions_aws_secret_access_key
-  aws_session_token       = var.gcp_functions_aws_session_token
-  tags                    = local.tags
 }

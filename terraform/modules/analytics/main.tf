@@ -14,7 +14,7 @@ resource "google_cloud_run_v2_service" "analytics" {
       resources {
         limits = {
           cpu    = "1"
-          memory = "256Mi"
+          memory = "512Mi"
         }
       }
     }
@@ -29,3 +29,67 @@ resource "google_cloud_run_service_iam_member" "public" {
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
+
+# BigQuery Dataset for SAWS Analytics
+resource "google_bigquery_dataset" "saws_analytics" {
+  dataset_id                  = "saws_analytics_${var.environment}"
+  friendly_name               = "SAWS Analytics"
+  description                 = "Dataset for SAWS analytics and Looker Studio"
+  location                    = "US"
+  project                     = var.project_id
+  delete_contents_on_destroy  = true
+}
+
+# BigQuery Table for Feedback and Sentiment
+resource "google_bigquery_table" "feedback_sentiment" {
+  dataset_id = google_bigquery_dataset.saws_analytics.dataset_id
+  table_id   = "feedback_sentiment"
+  project    = var.project_id
+
+  schema = <<EOF
+[
+  {
+    "name": "feedbackId",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Unique Feedback ID"
+  },
+  {
+    "name": "patientId",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "serviceId",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "rating",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "comment",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "submittedAt",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "sentimentLabel",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "sentimentScore",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  }
+]
+EOF
+}
+

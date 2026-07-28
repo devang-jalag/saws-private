@@ -19,3 +19,10 @@ variable "service_name" {
   type        = string
   default     = "saws-analytics-api"
 }
+
+variable "environment" {
+  description = "The environment (e.g., dev, prod)"
+  type        = string
+  default     = "dev"
+}
+

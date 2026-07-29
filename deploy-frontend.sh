@@ -24,6 +24,12 @@ terraform init
 terraform apply -target=google_artifact_registry_repository.frontend_repo -auto-approve -var="project_id=${PROJECT_ID}" -var="region=${REGION}"
 cd ../../..
 
+echo "Waiting 20 seconds for Artifact Registry to fully propagate across GCP..."
+sleep 20
+
+# Just in case Terraform failed silently, let's ensure it exists via gcloud
+gcloud artifacts repositories create $REPO_NAME --repository-format=docker --location=$REGION --project=$PROJECT_ID 2>/dev/null || true
+
 # 3. Build and push Docker image using Cloud Build
 echo "[3/4] Building Docker image for frontend using Cloud Build..."
 cd frontend
